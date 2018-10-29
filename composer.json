@@ -6,6 +6,8 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "knplabs/knp-markdown-bundle": "^1.7",
+        "nexylan/slack-bundle": "^2.0",
+        "php-http/guzzle6-adapter": "^1.1",
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/asset": "*",
         "symfony/console": "*",
@@ -20,6 +22,7 @@
         "sensiolabs/security-checker": "^5.0",
         "symfony/debug-bundle": "^3.3|^4.0",
         "symfony/dotenv": "*",
+        "symfony/maker-bundle": "^1.8",
         "symfony/monolog-bundle": "^3.0",
         "symfony/profiler-pack": "^1.0",
         "symfony/var-dumper": "^3.3|^4.0"

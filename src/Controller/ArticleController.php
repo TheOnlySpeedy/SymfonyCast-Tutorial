@@ -8,13 +8,22 @@
 
 namespace App\Controller;
 
-use Michelf\MarkdownInterface;
+use App\Service\MarkdownHelper;
+use App\Service\SlackClient;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ArticleController extends AbstractController {
+
+    /**
+     * @var bool
+     */
+    private $isDebug;
+
+    public function __construct(bool $isDebug) {
+        $this->isDebug = $isDebug;
+    }
 
     /**
      * @Route("/", name="app_homepage")
@@ -26,7 +35,11 @@ class ArticleController extends AbstractController {
     /**
      * @Route("/news/{slug}", name="article_show")
      */
-    public function show($slug, MarkdownInterface $markdown, AdapterInterface $cache) {
+    public function show($slug, MarkdownHelper $markdownHelper, SlackClient $slack) {
+        if ($slug === "khaaaaaan"){
+            $slack->sendMessage('Kahn', 'Ah, Kirk, my old friend...');
+        }
+
         $comments = [
             'I ate a normal rock once. It did NOT taste like bacon!',
             'Woohoo! I\'m going on an all-asteroid diet!',
@@ -82,12 +95,7 @@ Doner drumstick short loin,
 adipisicing cow cillum tenderloin.
 EOF;
 
-        $item = $cache->getItem('markdown_'.md5($articleContent));
-        if (!$item->isHit()) {
-            $item->set($markdown->transform($articleContent));
-            $cache->save($item);
-        }
-        $articleContent = $item->get();
+        $articleContent = $markdownHelper->parse($articleContent);
 
         return $this->render('article/show.html.twig', [
             'title' => ucwords(str_replace('-', ' ', $slug)),
