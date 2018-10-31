@@ -29,6 +29,7 @@ class MarkdownHelper {
      * @var LoggerInterface
      */
     private $logger;
+
     /**
      * @var bool
      */
