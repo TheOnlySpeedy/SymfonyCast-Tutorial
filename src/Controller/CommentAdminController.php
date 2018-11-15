@@ -2,18 +2,24 @@
 
 namespace App\Controller;
 
-use App\Entity\Comment;
 use App\Repository\CommentRepository;
-use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Class CommentAdminController
+ * @package App\Controller
+ *
+ * @IsGranted("ROLE_ADMIN_COMMENT")
+ */
 class CommentAdminController extends AbstractController
 {
     /**
      * @Route("/admin/comment", name="comment_admin")
+     * @IsGranted("ROLE_ADMIN")
      */
     public function index(CommentRepository $repository, Request $request, PaginatorInterface $paginator)
     {

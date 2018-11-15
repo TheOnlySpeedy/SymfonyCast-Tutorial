@@ -20,15 +20,12 @@ class ArticleFixtures extends BaseFixture implements DependentFixtureInterface
         'mercury.jpeg',
         'lightspeed.png',
     ];
-    private static $articleAuthors = [
-        'Mike Ferengi',
-        'Amy Oort',
-    ];
 
     public function loadData(ObjectManager $manager)
 
     {
-        $this->createMany(Article::class, 10, function(Article $article) {
+        $this->createMany(10, 'main_articles', function($i){
+            $article = new Article();
             $article->setTitle($this->faker->randomElement(self::$articleTitles))
                 // ->setSlug($this->faker->slug)
                 ->setContent(<<<EOF
@@ -52,16 +49,20 @@ EOF
             if ($this->faker->boolean(70)) {
                 $article->setPublishedAt($this->faker->dateTimeBetween('-100 days', '-1 days'));
             }
-            $article->setAuthor($this->faker->randomElement(self::$articleAuthors))
-                ->setHeartCount($this->faker->numberBetween(5, 100))
+            $article->setAuthor($this->getRandomReference('main_users'));
+
+            $article->setHeartCount($this->faker->numberBetween(5, 100))
                 ->setImageFilename($this->faker->randomElement(self::$articleImages))
             ;
 
-            $tags = $this->getRandomReferences(Tag::class, $this->faker->numberBetween(1, 5));
+            $tags = $this->getRandomReferences('main_tags', $this->faker->numberBetween(1, 5));
             foreach ($tags as $tag) {
                 $article->addTag($tag);
             }
+
+            return $article;
         });
+
         $manager->flush();
     }
 
@@ -72,6 +73,9 @@ EOF
      * @return array
      */
     public function getDependencies() {
-        return [TagFixture::class];
+        return [
+            TagFixture::class,
+            UserFixture::class
+        ];
     }
 }
